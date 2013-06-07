@@ -16,19 +16,21 @@ PATCH_URI="
 	openldap-testthreads.patch
 "
 
-PKG_NAMES="${NAME} ${NAME}-server lib${NAME}2_4_2 ${NAME}-devel"
+PKG_NAMES="${NAME} ${NAME}-server lib${NAME}2_4_2 ${NAME}-devel ${NAME}-doc"
 openldap_SUMMARY="${SUMMARY} (clients)"
 openldap_CONTENTS="--exclude=devel --exclude=drafts --exclude=guide --exclude=rfc
 	usr/bin/ldap* usr/share/doc/ usr/share/man/man1/"
 openldap_server_SUMMARY="${SUMMARY} (server)"
-openldap_server_CONTENTS="etc/ usr/sbin/ usr/share/doc/${NAME}/guide/
-	usr/share/man/man[58]/ var/"
+openldap_server_CONTENTS="etc/ usr/sbin/ usr/share/man/man[58]/ var/"
 libopenldap2_4_2_CATEGORY="${CATEGORY} Libs"
 libopenldap2_4_2_SUMMARY="${SUMMARY} (runtime)"
 libopenldap2_4_2_CONTENTS="usr/bin/*-2-4-2.dll"
 openldap_devel_CATEGORY="${CATEGORY} Devel Libs"
 openldap_devel_SUMMARY="${SUMMARY} (development)"
-openldap_devel_CONTENTS="usr/include/ usr/lib/*.a usr/share/doc/${NAME}/[dr]*/ usr/share/man/man3/"
+openldap_devel_CONTENTS="usr/include/ usr/lib/*.a"
+openldap_doc_CATEGORY="${CATEGORY} Doc"
+openldap_doc_SUMMARY="${SUMMARY} (documentation)"
+openldap_doc_CONTENTS="usr/share/doc/${NAME}/*/ usr/share/man/man3/"
 
 DEPS_PATH="/usr/sbin"
 DIFF_EXCLUDES="portable.hin"
