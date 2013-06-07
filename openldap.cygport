@@ -1,0 +1,108 @@
+inherit perl
+
+NAME="openldap"
+VERSION=2.4.35
+RELEASE=1
+CATEGORY="Net"
+SUMMARY="Lightweight Directory Access Protocol suite"
+DESCRIPTION="A suite of the Lightweight Directory Access Protocol (v3) servers, clients,
+utilities, and development tools."
+
+HOMEPAGE="http://www.openldap.org/"
+SRC_URI="ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-${VERSION}.tgz
+         ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-${VERSION}.md5"
+PATCH_URI="
+	openldap-cygwin.patch
+	openldap-testthreads.patch
+"
+
+PKG_NAMES="${NAME} ${NAME}-server lib${NAME}2_4_2 ${NAME}-devel"
+openldap_SUMMARY="${SUMMARY} (clients)"
+openldap_CONTENTS="--exclude=devel --exclude=drafts --exclude=guide --exclude=rfc
+	usr/bin/ldap* usr/share/doc/ usr/share/man/man1/"
+openldap_server_SUMMARY="${SUMMARY} (server)"
+openldap_server_CONTENTS="etc/ usr/sbin/ usr/share/doc/${NAME}/guide/
+	usr/share/man/man[58]/ var/"
+libopenldap2_4_2_CATEGORY="${CATEGORY} Libs"
+libopenldap2_4_2_SUMMARY="${SUMMARY} (runtime)"
+libopenldap2_4_2_CONTENTS="usr/bin/*-2-4-2.dll"
+openldap_devel_CATEGORY="${CATEGORY} Devel Libs"
+openldap_devel_SUMMARY="${SUMMARY} (development)"
+openldap_devel_CONTENTS="usr/include/ usr/lib/*.a usr/share/doc/${NAME}/[dr]*/ usr/share/man/man3/"
+
+DEPS_PATH="/usr/sbin"
+DIFF_EXCLUDES="portable.hin"
+
+MAKEOPTS="-j1"
+
+src_compile() {
+	cd ${S}
+	NO_AUTOMAKE=1 \
+	cygautoreconf
+
+	cd ${B}
+	# to enable modular backends and overlays, change the
+	# modules/backends/overlays flags to:
+	#	--enable-modules \
+	#	--enable-backends=mod \
+	#	--enable-overlays=mod \
+	cygconf \
+		--localstatedir=/var/openldap	\
+		--libexecdir=/usr/sbin		\
+		--with-cyrus-sasl		\
+		--enable-dynamic		\
+		--enable-syslog			\
+		--enable-proctitle		\
+		--enable-ipv6			\
+		--enable-local			\
+		--enable-dynacl			\
+		--enable-aci			\
+		--enable-cleartext		\
+		--enable-crypt			\
+		--enable-lmpasswd		\
+		--enable-spasswd		\
+		--enable-rewrite		\
+		--enable-rlookups		\
+		--disable-slapi			\
+		--disable-slp			\
+		--disable-wrappers		\
+		--disable-modules		\
+		--enable-backends=yes		\
+		--enable-overlays=yes		\
+		--disable-ndb
+
+	cygmake
+}
+
+src_test() {
+	cd ${B}
+	TESTLOOPS=4 TESTCHILDREN=2 make check
+}
+
+src_install() {
+	cd ${B}
+	cyginstall STRIP=
+
+	dodir /usr/share/doc/${NAME}
+	cp -r ${S}/doc/{devel,drafts,guide,rfc} ${D}/usr/share/doc/${NAME}/
+	rm -rf ${D}/usr/share/doc/${NAME}/guide/release
+	find ${D}/usr/share/doc/${NAME}/guide \( -name '*.sdf' -o -name 'Makefile' \) | xargs rm
+
+	mv ${D}/var/openldap/openldap-data/DB_CONFIG.example ${D}/var/openldap/openldap-data/DB_CONFIG
+
+	rm ${D}/etc/openldap/*.default
+	rm ${D}/etc/openldap/*.example
+
+	make_etc_defaults /var/openldap/openldap-data/DB_CONFIG
+	make_etc_defaults /etc/openldap/slapd.conf
+	make_etc_defaults /etc/openldap/ldap.conf
+	make_etc_defaults /etc/openldap/slapd.ldif
+
+	keepdir /var/openldap/run
+	keepdir /var/openldap/openldap-data
+	keepdir /var/openldap/openldap-slurp
+}
+
+DOCS="ANNOUNCEMENT"
+# is this really necessary for the slapd modules?
+KEEP_LA_FILES="module"

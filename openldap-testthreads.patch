@@ -1,0 +1,38 @@
+--- origsrc/openldap-2.4.33/tests/scripts/test060-mt-hot	2012-10-10 14:18:49.000000000 +0200
++++ src/openldap-2.4.33/tests/scripts/test060-mt-hot	2012-11-24 15:38:26.953455800 +0100
+@@ -123,7 +123,7 @@ if test $RC != 0 ; then
+ fi
+ 
+ # Perform a basic multi-threaded search on a single connection
+-THR=100
++THR=10
+ OUTER=5
+ INNER=`expr $TESTLOOPS \* 2`
+ echo "Testing basic mt-hot search: $THR threads ($OUTER x $INNER) loops..."
+@@ -178,7 +178,7 @@ if test $RC != 0 ; then
+ fi
+ 
+ # Perform a multi-threaded random DB search on a single connection
+-THR=100
++THR=10
+ OUTER=5
+ INNER=`expr $TESTLOOPS \* 2`
+ echo "Testing random mt-hot search: $THR threads ($OUTER x $INNER) loops..."
+@@ -217,7 +217,7 @@ fi
+ 
+ # Perform a basic multi-threaded search using multiple connections
+ CONN=5
+-THR=50
++THR=5
+ OUTER=5
+ INNER=`expr $TESTLOOPS \* 20`
+ echo "Testing basic mt-hot search: $THR threads $CONN conns ($OUTER x $INNER) loops..."
+@@ -236,7 +236,7 @@ fi
+ 
+ # Perform a multi-threaded random DB search using multiple connections
+ CONN=5
+-THR=100
++THR=10
+ OUTER=5
+ INNER=`expr $TESTLOOPS \* 2`
+ echo "Testing random mt-hot search: $THR threads $CONN conns ($OUTER x $INNER) loops..."
