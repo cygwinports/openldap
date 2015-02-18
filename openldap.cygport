@@ -2,7 +2,7 @@ inherit perl
 
 NAME="openldap"
 VERSION=2.4.35
-RELEASE=1
+RELEASE=2
 CATEGORY="Net"
 SUMMARY="Lightweight Directory Access Protocol suite"
 DESCRIPTION="A suite of the Lightweight Directory Access Protocol (v3) servers, clients,
